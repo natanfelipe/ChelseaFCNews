@@ -1,5 +1,7 @@
 package com.br.natanfelipe.chelseafcnews.viewmodel
 
+import android.view.View
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.br.natanfelipe.chelseafcnews.model.ArticlesList
 import com.br.natanfelipe.chelseafcnews.repository.NewsRepository
@@ -7,25 +9,33 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: NewsRepository): BaseViewModel() {
     val articlesList by lazy { MutableLiveData<ArticlesList>() }
-    val isLoading by lazy { MutableLiveData<Boolean>() }
-    val isError by lazy { MutableLiveData<Boolean>() }
+    private val loading = MutableLiveData<Int>().apply { View.VISIBLE }
+    val progressVisibility: LiveData<Int>
+    get() = loading
+    private val showList = MutableLiveData<Int>().apply { View.VISIBLE }
+    val listVisibility: LiveData<Int>
+    get() = showList
+    private val showError = MutableLiveData<Int>().apply { View.VISIBLE }
+    val errorMessageVisibility: LiveData<Int>
+    get() = showError
 
     fun refresh() {
-        isLoading.value = true
+        loading.value = View.VISIBLE
+        showError.value = View.GONE
+        showList.value = View.GONE
         getNews()
     }
 
     fun getNews() {
         launch {
             val response = repository.getAllNews()
-
-            isLoading.value = false
+            loading.value = View.GONE
 
             if(response.isSuccessful) {
-                isError.value = false
+                showList.value = View.VISIBLE
                 articlesList.value = response.body()
             } else {
-                isError.value = true
+                showError.value = View.VISIBLE
             }
         }
     }

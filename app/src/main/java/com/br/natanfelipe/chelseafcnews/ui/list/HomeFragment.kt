@@ -5,10 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 
 import com.br.natanfelipe.chelseafcnews.R
+import com.br.natanfelipe.chelseafcnews.databinding.FragmentHomeBindingImpl
 import com.br.natanfelipe.chelseafcnews.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -21,17 +23,23 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_home, container, false)
+    ): View? {
 
+        val binding = DataBindingUtil.inflate<FragmentHomeBindingImpl>(
+            inflater, R.layout.fragment_home, container, false
+        )
+
+        binding.viewModel = homeViewModel
+        binding.lifecycleOwner = this
+
+        return binding.root
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         newsList.adapter = adapter
-        homeViewModel.getNews()
+        homeViewModel.refresh()
         loadNews()
-        showProgressBar(homeViewModel.isLoading)
-        showErrorMessage(homeViewModel.isError)
-
         refreshList.setOnRefreshListener {
             refresh()
         }
@@ -39,36 +47,12 @@ class HomeFragment : Fragment() {
 
     private fun loadNews() {
         homeViewModel.articlesList.observe(viewLifecycleOwner, Observer { articles ->
-            newsList.visibility = View.VISIBLE
             adapter.updateList(articles)
         })
     }
 
     private fun refresh() {
-        newsList.visibility = View.GONE
-        errorMessage.visibility = View.GONE
-        progress.visibility = View.VISIBLE
         homeViewModel.refresh()
         refreshList.isRefreshing = false
     }
-
-    private fun showErrorMessage(errorMessage: MutableLiveData<Boolean>) {
-        errorMessage.observe(viewLifecycleOwner, Observer { isError ->
-            if(isError) {
-                this.errorMessage.visibility = View.VISIBLE
-            }
-        })
-    }
-
-    private fun showProgressBar(loading: MutableLiveData<Boolean>) {
-        loading.observe(viewLifecycleOwner, Observer {isLoading ->
-            progress.visibility = if(isLoading) View.VISIBLE else View.GONE
-            if(isLoading){
-                newsList.visibility = View.GONE
-                errorMessage.visibility = View.GONE
-            }
-
-        })
-    }
-
 }
