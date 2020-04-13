@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 
 import com.br.natanfelipe.chelseafcnews.R
@@ -26,22 +27,18 @@ class HomeFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         newsList.adapter = adapter
-
         homeViewModel.getNews()
+        loadNews()
+        showProgressBar(homeViewModel.isLoading)
+        showErrorMessage(homeViewModel.isError)
 
         refreshList.setOnRefreshListener {
             refresh()
         }
-
-        loadNews()
     }
 
     private fun loadNews() {
         homeViewModel.articlesList.observe(viewLifecycleOwner, Observer { articles ->
-            val loading = homeViewModel.isLoading
-            if(loading.value == false) {
-                progress.visibility = View.GONE
-            }
             newsList.visibility = View.VISIBLE
             adapter.updateList(articles)
         })
@@ -49,9 +46,29 @@ class HomeFragment : Fragment() {
 
     private fun refresh() {
         newsList.visibility = View.GONE
+        errorMessage.visibility = View.GONE
         progress.visibility = View.VISIBLE
         homeViewModel.refresh()
         refreshList.isRefreshing = false
+    }
+
+    private fun showErrorMessage(errorMessage: MutableLiveData<Boolean>) {
+        errorMessage.observe(viewLifecycleOwner, Observer { isError ->
+            if(isError) {
+                this.errorMessage.visibility = View.VISIBLE
+            }
+        })
+    }
+
+    private fun showProgressBar(loading: MutableLiveData<Boolean>) {
+        loading.observe(viewLifecycleOwner, Observer {isLoading ->
+            progress.visibility = if(isLoading) View.VISIBLE else View.GONE
+            if(isLoading){
+                newsList.visibility = View.GONE
+                errorMessage.visibility = View.GONE
+            }
+
+        })
     }
 
 }

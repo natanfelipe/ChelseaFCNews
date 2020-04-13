@@ -6,9 +6,9 @@ import com.br.natanfelipe.chelseafcnews.repository.NewsRepository
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: NewsRepository): BaseViewModel() {
-
     val articlesList by lazy { MutableLiveData<ArticlesList>() }
     val isLoading by lazy { MutableLiveData<Boolean>() }
+    val isError by lazy { MutableLiveData<Boolean>() }
 
     fun refresh() {
         isLoading.value = true
@@ -19,13 +19,14 @@ class HomeViewModel(private val repository: NewsRepository): BaseViewModel() {
         launch {
             val response = repository.getAllNews()
 
+            isLoading.value = false
+
             if(response.isSuccessful) {
-                isLoading.value = false
+                isError.value = false
                 articlesList.value = response.body()
             } else {
-
+                isError.value = true
             }
         }
-
     }
 }
