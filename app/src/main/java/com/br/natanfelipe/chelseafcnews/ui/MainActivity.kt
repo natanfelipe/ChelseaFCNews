@@ -1,7 +1,8 @@
-package com.br.natanfelipe.chelseafcnews
+package com.br.natanfelipe.chelseafcnews.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.br.natanfelipe.chelseafcnews.R
 
 class MainActivity : AppCompatActivity() {
 

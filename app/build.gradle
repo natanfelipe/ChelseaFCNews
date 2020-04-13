@@ -25,9 +25,11 @@ android {
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
         def url = properties.getProperty("baseUrl")
         def key = properties.getProperty("apiKey")
+        def theme = properties.getProperty("query")
 
         it.buildConfigField "String", "BASE_URL", url
         it.buildConfigField "String", "API_KEY", key
+        it.buildConfigField "String", "THEME", theme
     }
 
     buildTypes {
