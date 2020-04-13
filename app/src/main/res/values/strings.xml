@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">ChelseaFCNews</string>
+    <string name="app_name">Chelsea FC News</string>
+    <string name="title">Title</string>
+    <string name="loren_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Integer vel magna eget metus scelerisque tincidunt. Nullam eu leo magna. Donec mauris ligula, lacinia at nunc quis,
+        faucibus feugiat felis. Suspendisse at enim maximus, venenatis erat id, venenatis metus. Sed facilisis,
+        turpis fringilla luctus hendrerit, lectus lorem feugiat lacus, in luctus est urna tincidunt turpis.
+        Nullam placerat posuere dui vel viverra. Nam hendrerit nisl a erat facilisis placerat. In in viverra nisl.
+        Suspendisse quis magna erat. Morbi nec purus justo. Pellentesque habitant morbi tristique senectus et netus et malesuada
+        fames ac turpis egestas.
+</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
