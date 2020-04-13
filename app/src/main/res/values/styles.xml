@@ -8,4 +8,19 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="headLine" parent="Widget.AppCompat.TextView">
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/headLine_text_size</item>
+        <item name="android:layout_margin">@dimen/default_margin</item>
+    </style>
+
+    <style name="bodyText" parent="Widget.AppCompat.TextView">
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/body_text_size</item>
+        <item name="android:layout_margin">@dimen/default_margin</item>
+    </style>
+
 </resources>

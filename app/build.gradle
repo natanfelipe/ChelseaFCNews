@@ -18,14 +18,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes.each{
+    dataBinding.enabled = true
+
+    buildTypes.each {
         Properties properties = new Properties()
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
-        def url = properties.getProperty("baseUrl")
-        def key = properties.getProperty("apiKey")
+        def baseUrl = properties.getProperty("baseUrl")
+        def apiKey = properties.getProperty("apiKey")
+        def query = properties.getProperty("query")
 
-        it.buildConfigField "String", "BASE_URL", url
-        it.buildConfigField "String", "API_KEY", key
+        it.buildConfigField "String", "BASE_URL", baseUrl
+        it.buildConfigField "String", "API_KEY", apiKey
+        it.buildConfigField "String", "THEME", query
     }
 
     buildTypes {
@@ -35,6 +39,13 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -45,10 +56,12 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     //Coil
-    implementation"io.coil-kt:coil:$coil_version"
+    implementation "io.coil-kt:coil:$coil_version"
 
     //Koin
-    implementation "org.koin:koin-core:$koin_version"
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation "org.koin:koin-test:$koin_version"
 
     // LiveData
@@ -64,6 +77,9 @@ dependencies {
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    //Okhttp
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
