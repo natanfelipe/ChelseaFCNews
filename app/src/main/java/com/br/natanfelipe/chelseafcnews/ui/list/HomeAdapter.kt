@@ -2,12 +2,14 @@ package com.br.natanfelipe.chelseafcnews.ui.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.br.natanfelipe.chelseafcnews.databinding.ItemListBinding
 import com.br.natanfelipe.chelseafcnews.model.Articles
 import com.br.natanfelipe.chelseafcnews.model.ArticlesList
 
-class HomeAdapter(private val articles: ArrayList<Articles>): RecyclerView.Adapter<HomeViewHolder>() {
+class HomeAdapter(private val articles: ArrayList<Articles>): PagedListAdapter<Articles, HomeViewHolder>(articlesDiffCallback){//RecyclerView.Adapter<HomeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -22,10 +24,14 @@ class HomeAdapter(private val articles: ArrayList<Articles>): RecyclerView.Adapt
         holder.view.article = articles[position]
     }
 
-    fun updateList(list: ArticlesList) {
-        articles.clear()
-        articles.addAll(list.articles)
-        notifyDataSetChanged()
+    companion object {
+        private val articlesDiffCallback = object : DiffUtil.ItemCallback<Articles>() {
+            override fun areItemsTheSame(oldItem: Articles, newItem: Articles) =
+                oldItem.url == newItem.url
+
+            override fun areContentsTheSame(oldItem: Articles, newItem: Articles) =
+                oldItem == newItem
+        }
     }
 
 }

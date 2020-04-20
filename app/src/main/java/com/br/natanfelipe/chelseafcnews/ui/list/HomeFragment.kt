@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 
 import com.br.natanfelipe.chelseafcnews.R
@@ -38,7 +37,6 @@ class HomeFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         newsList.adapter = adapter
-        homeViewModel.refresh()
         loadNews()
         refreshList.setOnRefreshListener {
             refresh()
@@ -46,8 +44,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadNews() {
-        homeViewModel.articlesList.observe(viewLifecycleOwner, Observer { articles ->
-            adapter.updateList(articles)
+        homeViewModel.loadData().observe(viewLifecycleOwner, Observer { articles ->
+            adapter.submitList(articles)
         })
     }
 
