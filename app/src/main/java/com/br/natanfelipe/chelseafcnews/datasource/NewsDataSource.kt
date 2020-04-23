@@ -16,49 +16,40 @@ class NewsDataSource : PageKeyedDataSource<Int, Articles>(),
         get() = job + Dispatchers.Main
     val repository: NewsRepository by inject()
     private var initialPage = 1
-    private var totalPages = 0
-        get() {
-            if (field == 0) return field
-            return field / 20
-        }
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Articles>
     ) {
         launch(Dispatchers.IO) {
-            val response = repository.getAllNews(initialPage)
-
-            when {
-                response.isSuccessful -> {
-                    response.body()?.let {
-                        val articlesList = it.articles
-                        callback.onResult(articlesList, null, initialPage++)
-                    }
-                }
-            }
+            getNews(initialPage, 2, callback, null)
         }
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Articles>) {
-        if(params.key <= initialPage) {
-            launch(Dispatchers.IO) {
-                val response = repository.getAllNews(initialPage)
-                when {
-                    response.isSuccessful -> {
-                        response.body()?.let {
-                            val articlesList = it.articles
-                            callback.onResult(articlesList,params.key+1)
-                        }
-                    }
-                }
-            }
+        val page = params.key
+        launch(Dispatchers.IO) {
+            getNews(page, page + 1, null, callback)
         }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Articles>) {}
 
-    fun closeScope(){
-        job.cancel()
+    suspend fun getNews(
+        requestedPage: Int,
+        nextPage: Int,
+        initialCallback: LoadInitialCallback<Int, Articles>?,
+        callback: LoadCallback<Int, Articles>?
+    ) {
+        val response = repository.getAllNews(requestedPage)
+        when {
+            response.isSuccessful -> {
+                response.body()?.let {
+                    val articlesList = it.articles
+                    initialCallback?.onResult(articlesList, null, nextPage)
+                    callback?.onResult(articlesList, nextPage)
+                }
+            }
+        }
     }
 }
