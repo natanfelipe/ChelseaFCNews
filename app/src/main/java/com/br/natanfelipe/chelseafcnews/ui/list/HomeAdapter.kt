@@ -1,13 +1,20 @@
 package com.br.natanfelipe.chelseafcnews.ui.list
 
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import com.br.natanfelipe.chelseafcnews.databinding.ItemListBinding
+import com.br.natanfelipe.chelseafcnews.interfaces.OnClickItemList
 import com.br.natanfelipe.chelseafcnews.model.Articles
-import com.br.natanfelipe.chelseafcnews.model.ArticlesList
 
-class HomeAdapter(private val articles: ArrayList<Articles>): RecyclerView.Adapter<HomeViewHolder>() {
+class HomeAdapter(
+    private var progressVisibility: MutableLiveData<Int>
+): PagedListAdapter<Articles, HomeViewHolder>(articlesDiffCallback), OnClickItemList{
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -16,16 +23,35 @@ class HomeAdapter(private val articles: ArrayList<Articles>): RecyclerView.Adapt
         return HomeViewHolder(view)
     }
 
-    override fun getItemCount(): Int = articles.size
-
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
-        holder.view.article = articles[position]
+        currentList?.let { list ->
+            if(list.size > 0) {
+               progressVisibility.value = View.GONE
+            }
+        }
+        getItem(position)?.let {article ->
+            holder.bind(article)
+            holder.view.click = this
+        }
     }
 
-    fun updateList(list: ArticlesList) {
-        articles.clear()
-        articles.addAll(list.articles)
-        notifyDataSetChanged()
+    companion object {
+        private val articlesDiffCallback = object : DiffUtil.ItemCallback<Articles>() {
+            override fun areItemsTheSame(oldItem: Articles, newItem: Articles) =
+                oldItem.url == newItem.url
+
+            override fun areContentsTheSame(oldItem: Articles, newItem: Articles) =
+                oldItem == newItem
+        }
     }
 
+    override fun onClick(view: View) {
+        currentList?.let {  articles ->
+            for (article in articles) {
+                if(view.tag == article.url) {
+                    Log.d("News Title", article.title)
+                }
+            }
+        }
+    }
 }

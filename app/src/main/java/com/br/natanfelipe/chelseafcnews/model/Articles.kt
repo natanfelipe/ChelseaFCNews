@@ -1,6 +1,10 @@
 package com.br.natanfelipe.chelseafcnews.model
 
-data class ArticlesList(val articles: List<Articles>)
+data class ArticlesList(
+    val articles: List<Articles>,
+    val status: String,
+    val totalResults: Int
+)
 
 data class Articles(
     val source: Sources,
