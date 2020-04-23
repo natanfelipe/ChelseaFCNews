@@ -7,11 +7,17 @@
             <variable
                 name="article"
                 type="com.br.natanfelipe.chelseafcnews.model.Articles" />
+
+            <variable
+                name="click"
+                type="com.br.natanfelipe.chelseafcnews.interfaces.OnClickItemList" />
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:tag="@{article.url}"
+        android:onClick="@{click::onClick}"
         android:layout_margin="@dimen/default_margin">
 
         <androidx.constraintlayout.widget.ConstraintLayout

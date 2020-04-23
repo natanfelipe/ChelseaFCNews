@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 
 import com.br.natanfelipe.chelseafcnews.R
@@ -18,7 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModel()
-    private var adapter = HomeAdapter(arrayListOf())
+    private lateinit var adapter: HomeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,8 +36,8 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        adapter = HomeAdapter(homeViewModel.loading)
         newsList.adapter = adapter
-        homeViewModel.refresh()
         loadNews()
         refreshList.setOnRefreshListener {
             refresh()
@@ -46,8 +45,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadNews() {
-        homeViewModel.articlesList.observe(viewLifecycleOwner, Observer { articles ->
-            adapter.updateList(articles)
+        homeViewModel.loadData().observe(viewLifecycleOwner, Observer { articles ->
+            adapter.submitList(articles)
         })
     }
 
