@@ -51,7 +51,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun refresh() {
-        homeViewModel.refresh()
+        homeViewModel.articles.value?.let {
+            it.dataSource.invalidate()
+            homeViewModel.refresh()
+            loadNews()
+        }
         refreshList.isRefreshing = false
     }
 }

@@ -31,8 +31,6 @@ class HomeViewModel(private val newsDataSourceFactory: NewsDataSourceFactory): B
     }
 
     fun loadData(): LiveData<PagedList<Articles>> {
-
-
         if(articles.value?.size == 0) {
             showError.value = View.VISIBLE
             showList.value = View.GONE
