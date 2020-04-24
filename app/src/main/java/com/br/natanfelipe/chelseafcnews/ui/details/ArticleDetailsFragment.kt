@@ -24,14 +24,19 @@ class ArticleDetailsFragment : Fragment() {
             ArticleDetailsFragmentArgs.fromBundle(it).article
         })
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        appCompatActivity = activity as AppCompatActivity
+    }
+
     private lateinit var binding: FragmentArticleDetailsBindingImpl
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        appCompatActivity = activity as AppCompatActivity
 
-        binding = DataBindingUtil.inflate<FragmentArticleDetailsBindingImpl>(
+        binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_article_details, container, false
         )
 
@@ -43,17 +48,7 @@ class ArticleDetailsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        appCompatActivity.supportActionBar?.let {
-            it.hide()
-        }
+
         toolbar.setNavigationOnClickListener { appCompatActivity.onBackPressed() }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        appCompatActivity.supportActionBar?.let {
-            it.show()
-        }
-    }
-
 }

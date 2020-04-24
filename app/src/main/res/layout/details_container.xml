@@ -31,16 +31,40 @@
                 tools:text="@string/title" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/newsAuthor"
+                style="@style/authorText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{@string/generic_author(viewmodel.author)}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/newsTitle"
+                tools:text="@string/generic_author" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/newsDatePublished"
+                style="@style/dateText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:dateFormat="@{viewmodel.date}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/newsAuthor"
+                tools:text="@string/generic_author" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/newsBody"
                 style="@style/bodyText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{viewmodel.content}"
+                android:textHtml="@{viewmodel.content}"
+                app:linkUrl="@{viewmodel.link}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/newsTitle"
+                app:layout_constraintTop_toBottomOf="@id/newsDatePublished"
                 tools:text="@string/loren_ipsum" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
