@@ -51,5 +51,7 @@ class NewsDataSource : PageKeyedDataSource<Int, Articles>(),
                 }
             }
         }
+
+        job.cancel()
     }
 }

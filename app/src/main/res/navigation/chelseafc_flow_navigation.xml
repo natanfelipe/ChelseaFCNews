@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/navigateToNewsDetail"
-            app:destination="@id/articleDetailsFragment" />
+            app:destination="@id/articleDetailsFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit" />
     </fragment>
     <fragment
         android:id="@+id/articleDetailsFragment"
