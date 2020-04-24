@@ -1,10 +1,10 @@
 package com.br.natanfelipe.chelseafcnews.ui.list
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.br.natanfelipe.chelseafcnews.databinding.ItemListBinding
@@ -49,7 +49,8 @@ class HomeAdapter(
         currentList?.let {  articles ->
             for (article in articles) {
                 if(view.tag == article.url) {
-                    Log.d("News Title", article.title)
+                    val action =  HomeFragmentDirections.navigateToNewsDetail(article)
+                    Navigation.findNavController(view).navigate(action)
                 }
             }
         }
