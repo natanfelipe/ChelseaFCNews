@@ -22,6 +22,4 @@ class DetailsViewModel(private val articles: Articles): ViewModel() {
 
     val link: String
         get() = articles.url
-
-
 }
