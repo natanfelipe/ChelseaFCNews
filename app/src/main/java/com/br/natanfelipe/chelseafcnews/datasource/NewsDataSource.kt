@@ -11,10 +11,10 @@ import kotlin.coroutines.CoroutineContext
 class NewsDataSource : PageKeyedDataSource<Int, Articles>(),
     KoinComponent, CoroutineScope {
 
-    val job: Job = Job()
+    private val job: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
-    val repository: NewsRepository by inject()
+    private val repository: NewsRepository by inject()
     private var initialPage = 1
 
     override fun loadInitial(
@@ -35,7 +35,7 @@ class NewsDataSource : PageKeyedDataSource<Int, Articles>(),
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Articles>) {}
 
-    suspend fun getNews(
+    private suspend fun getNews(
         requestedPage: Int,
         nextPage: Int,
         initialCallback: LoadInitialCallback<Int, Articles>?,
