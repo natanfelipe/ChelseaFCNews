@@ -8,6 +8,7 @@ import com.br.natanfelipe.chelseafcnews.model.Sources
 import com.br.natanfelipe.chelseafcnews.repository.NewsRepository
 import com.br.natanfelipe.chelseafcnews.viewmodel.DetailsViewModel
 import com.br.natanfelipe.chelseafcnews.viewmodel.HomeViewModel
+import com.br.natanfelipe.chelseafcnews.viewmodel.WebArticleViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -16,6 +17,7 @@ val appModule = module {
     single { provideDataSourceFactory() }
     viewModel { provideViewModel(get()) }
     viewModel { (articles: Articles) -> DetailsViewModel(articles) }
+    viewModel { (url: String) -> WebArticleViewModel(url) }
     factory { provideDataSource() }
 }
 
@@ -23,4 +25,3 @@ fun provideDataSource() = NewsDataSource()
 fun provideDataSourceFactory() = NewsDataSourceFactory()
 fun provideRepository(newsApi: NewsApi) = NewsRepository(newsApi)
 fun provideViewModel(newsDataSourceFactory: NewsDataSourceFactory): HomeViewModel = HomeViewModel(newsDataSourceFactory)
-fun provideDetailsViewModel(articles: Articles): DetailsViewModel = DetailsViewModel(articles)

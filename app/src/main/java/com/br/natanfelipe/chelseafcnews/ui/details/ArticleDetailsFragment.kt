@@ -35,11 +35,9 @@ class ArticleDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_article_details, container, false
         )
-
         binding.viewmodel = viewModel
         binding.lifecycleOwner = this
 
@@ -48,7 +46,6 @@ class ArticleDetailsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         toolbar.setNavigationOnClickListener { appCompatActivity.onBackPressed() }
     }
 }

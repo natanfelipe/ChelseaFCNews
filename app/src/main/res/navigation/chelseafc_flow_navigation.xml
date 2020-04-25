@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/navigateToNewsDetail"
-            app:destination="@id/articleDetailsFragment" />
+            app:destination="@id/articleDetailsFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit" />
     </fragment>
     <fragment
         android:id="@+id/articleDetailsFragment"
@@ -21,5 +23,23 @@
         <argument
             android:name="article"
             app:argType="com.br.natanfelipe.chelseafcnews.model.Articles" />
+        <action
+            android:id="@+id/navigateToWebArticle"
+            app:destination="@id/webArticleFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"/>
+    </fragment>
+    <fragment
+        android:id="@+id/webArticleFragment"
+        android:name="com.br.natanfelipe.chelseafcnews.ui.webarticle.WebArticleFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_web_article">
+        <argument
+            android:name="linkUrl"
+            app:argType="string" />
+        <action
+            android:id="@+id/navigateBackToDetails"
+            app:destination="@id/articleDetailsFragment"
+            app:popUpTo="@id/articleDetailsFragment"/>
     </fragment>
 </navigation>

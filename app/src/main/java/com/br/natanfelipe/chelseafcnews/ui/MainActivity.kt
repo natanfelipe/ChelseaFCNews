@@ -16,7 +16,8 @@ class MainActivity : AppCompatActivity() {
     private val appBarConfiguration by lazy {
         AppBarConfiguration(
             setOf(
-                R.id.homeFragment
+                R.id.homeFragment,
+                R.id.webArticleFragment
             )
         )
     }
