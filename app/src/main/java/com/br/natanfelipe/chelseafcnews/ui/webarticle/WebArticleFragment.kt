@@ -45,6 +45,7 @@ class WebArticleFragment : Fragment() {
         if(savedInstanceState == null && viewModel.isUrlWorking()) {
             webview.settings.apply {
                 loadsImagesAutomatically = true
+                javaScriptEnabled = true
             }
 
             webview.webChromeClient = object : WebChromeClient() {

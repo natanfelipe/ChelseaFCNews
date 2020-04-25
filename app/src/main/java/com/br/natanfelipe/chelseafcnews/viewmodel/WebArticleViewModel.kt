@@ -19,7 +19,7 @@ class WebArticleViewModel(private val url: String): ViewModel() {
         get() = _errorVisibility
 
     fun isUrlWorking(): Boolean {
-        val isToLoad = linkUrl.isNullOrEmpty()
+        val isToLoad = !linkUrl.isNullOrEmpty()
 
         if(!isToLoad) {
            _errorVisibility.value = View.VISIBLE
