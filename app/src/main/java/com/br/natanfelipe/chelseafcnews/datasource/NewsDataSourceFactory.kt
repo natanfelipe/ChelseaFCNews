@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import com.br.natanfelipe.chelseafcnews.model.Articles
 
-class NewsDataSourceFactory:DataSource.Factory<Int,Articles>() {
+class NewsDataSourceFactory: DataSource.Factory<Int,Articles>() {
 
     private val postLiveData = MutableLiveData<NewsDataSource>()
 

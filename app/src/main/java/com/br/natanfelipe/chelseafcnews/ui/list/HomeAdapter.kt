@@ -15,7 +15,6 @@ class HomeAdapter(
     private var progressVisibility: MutableLiveData<Int>
 ): PagedListAdapter<Articles, HomeViewHolder>(articlesDiffCallback), OnClickItemList{
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = ItemListBinding.inflate(inflater, parent, false)
