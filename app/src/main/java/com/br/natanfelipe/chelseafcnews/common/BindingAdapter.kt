@@ -27,18 +27,18 @@ fun loadImage(imageView: AppCompatImageView, url: String?) {
     }
 }
 
-@BindingAdapter("android:textHtml","linkUrl")
+@BindingAdapter("android:textHtml", "linkUrl")
 fun convertHtmlToText(textView: AppCompatTextView, text: String, url: String) {
     lateinit var spannableString: SpannableString
     val readMoreText = textView.context.getString(R.string.tap_to_read_more_label)
-    val textBody = text.replaceAfter("[", readMoreText).replace(" ["," ")
+    val textBody = text.replaceAfter("[", readMoreText).replace(" [", " ")
     val readMoreCounter = readMoreText.length
 
-    if (Build.VERSION.SDK_INT >= 24) {
-        spannableString = SpannableString(Html.fromHtml(textBody, Html.FROM_HTML_MODE_LEGACY))
+    spannableString = if (Build.VERSION.SDK_INT >= 24) {
+        SpannableString(Html.fromHtml(textBody, Html.FROM_HTML_MODE_LEGACY))
     } else {
         @Suppress("DEPRECATION")
-        spannableString = SpannableString(Html.fromHtml(textBody))
+        SpannableString(Html.fromHtml(textBody))
     }
 
     val startIndex = spannableString.lastIndexOf(readMoreText[0])
@@ -52,7 +52,12 @@ fun convertHtmlToText(textView: AppCompatTextView, text: String, url: String) {
     }
 
     spannableString.apply {
-        setSpan(ForegroundColorSpan(Color.BLUE), startIndex - 1, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        setSpan(
+            ForegroundColorSpan(Color.BLUE),
+            startIndex - 1,
+            endIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         setSpan(clickableSpan, startIndex - 1, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
     textView.apply {

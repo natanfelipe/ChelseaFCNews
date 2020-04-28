@@ -1,5 +1,6 @@
 package com.br.natanfelipe.chelseafcnews.datasource
 
+import android.util.Log
 import androidx.paging.PageKeyedDataSource
 import com.br.natanfelipe.chelseafcnews.model.Articles
 import com.br.natanfelipe.chelseafcnews.repository.NewsRepository
@@ -16,6 +17,11 @@ class NewsDataSource : PageKeyedDataSource<Int, Articles>(),
         get() = job + Dispatchers.Main
     private val repository: NewsRepository by inject()
     private var initialPage = 1
+    val exceptionHandler = CoroutineExceptionHandler{_ , throwable->
+        Log.d("NATAN", throwable.printStackTrace().toString())
+        throwable.printStackTrace()
+    }
+
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
@@ -42,12 +48,18 @@ class NewsDataSource : PageKeyedDataSource<Int, Articles>(),
         callback: LoadCallback<Int, Articles>?
     ) {
         val response = repository.getAllNews(requestedPage)
-        when {
-            response.isSuccessful -> {
-                response.body()?.let {
-                    val articlesList = it.articles
-                    initialCallback?.onResult(articlesList, null, nextPage)
-                    callback?.onResult(articlesList, nextPage)
+        launch(Dispatchers.Main + exceptionHandler) {
+            when {
+                response.isSuccessful -> {
+                    response.body()?.let {
+                        val articlesList = it.articles
+                        initialCallback?.onResult(articlesList, null, nextPage)
+                        callback?.onResult(articlesList, nextPage)
+                    }
+                }
+                else -> {
+                    if(response.body() == null)
+                    Log.d("NATAN", "${response.errorBody()}")
                 }
             }
         }

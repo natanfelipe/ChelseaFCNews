@@ -1,5 +1,6 @@
 package com.br.natanfelipe.chelseafcnews.ui.list
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,16 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-
 import com.br.natanfelipe.chelseafcnews.R
+import com.br.natanfelipe.chelseafcnews.common.Utils
 import com.br.natanfelipe.chelseafcnews.databinding.FragmentHomeBindingImpl
 import com.br.natanfelipe.chelseafcnews.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModel()
+    private val utils: Utils by inject()
     private lateinit var adapter: HomeAdapter
 
     override fun onCreateView(
@@ -33,28 +36,45 @@ class HomeFragment : Fragment() {
 
         return binding.root
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        adapter = HomeAdapter(homeViewModel.loading)
+        val context = this.getContext()
+
+        adapter = HomeAdapter(homeViewModel.mutableProgressVisibility)
         newsList.adapter = adapter
-        loadNews()
+        context?.let {
+            loadNews(it)
+        }
         refreshList.setOnRefreshListener {
             refresh()
         }
     }
 
-    private fun loadNews() {
-        homeViewModel.loadData().observe(viewLifecycleOwner, Observer { articles ->
-            adapter.submitList(articles)
-        })
+    private fun loadNews(context: Context) {
+        val isDeviceOnline = utils.isInternetAvailable(context)
+        homeViewModel.apply {
+            if (isDeviceOnline) {
+                loadData().observe(viewLifecycleOwner, Observer { articles ->
+                    adapter.submitList(articles)
+                })
+            } else {
+                displayErrorMessage(isDeviceOnline)
+            }
+        }
+
     }
 
     private fun refresh() {
-        homeViewModel.articles.value?.let {
-            it.dataSource.invalidate()
-            homeViewModel.refresh()
-            loadNews()
+        homeViewModel.apply {
+            articles.value?.let {
+                it.dataSource.invalidate()
+            }
+            refresh()
+            context?.let {
+                loadNews(it)
+            }
         }
         refreshList.isRefreshing = false
     }
