@@ -2,6 +2,7 @@ package com.br.natanfelipe.chelseafcnews.datasource
 
 import android.util.Log
 import androidx.paging.PageKeyedDataSource
+import com.br.natanfelipe.chelseafcnews.common.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.model.Articles
 import com.br.natanfelipe.chelseafcnews.repository.NewsRepository
 import kotlinx.coroutines.*
@@ -55,6 +56,8 @@ class NewsDataSource : PageKeyedDataSource<Int, Articles>(),
                         val articlesList = it.articles
                         initialCallback?.onResult(articlesList, null, nextPage)
                         callback?.onResult(articlesList, nextPage)
+
+                        EspressoIdlingResources.decrement()
                     }
                 }
                 else -> {

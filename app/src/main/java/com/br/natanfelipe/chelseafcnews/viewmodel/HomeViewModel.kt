@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.br.natanfelipe.chelseafcnews.R
+import com.br.natanfelipe.chelseafcnews.common.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.datasource.NewsDataSourceFactory
 import com.br.natanfelipe.chelseafcnews.model.Articles
 
@@ -40,6 +41,7 @@ class HomeViewModel(private val newsDataSourceFactory: NewsDataSourceFactory): B
             mutableListVisibility.value = View.GONE
         } else {
             mutableErrorMessageVisibility.value = View.GONE
+            mutableErrorMessageText.value = R.string.generic_error
             mutableListVisibility.value = View.VISIBLE
         }
 

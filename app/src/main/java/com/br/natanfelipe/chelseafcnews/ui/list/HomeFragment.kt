@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.br.natanfelipe.chelseafcnews.R
+import com.br.natanfelipe.chelseafcnews.common.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.common.Utils
 import com.br.natanfelipe.chelseafcnews.databinding.FragmentHomeBindingImpl
 import com.br.natanfelipe.chelseafcnews.viewmodel.HomeViewModel
@@ -56,8 +58,10 @@ class HomeFragment : Fragment() {
         val isDeviceOnline = utils.isInternetAvailable(context)
         homeViewModel.apply {
             if (isDeviceOnline) {
+                EspressoIdlingResources.increment()
                 loadData().observe(viewLifecycleOwner, Observer { articles ->
                     adapter.submitList(articles)
+                    animateRecyclerView()
                 })
             } else {
                 displayErrorMessage(isDeviceOnline)
@@ -77,5 +81,11 @@ class HomeFragment : Fragment() {
             }
         }
         refreshList.isRefreshing = false
+    }
+
+    private fun animateRecyclerView() {
+        val resId = R.anim.layout_animation_collapse
+        val animation = AnimationUtils.loadLayoutAnimation(this.context, resId)
+        newsList.setLayoutAnimation(animation)
     }
 }

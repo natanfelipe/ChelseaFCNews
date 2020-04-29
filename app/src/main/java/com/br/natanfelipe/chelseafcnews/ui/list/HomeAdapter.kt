@@ -7,13 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.br.natanfelipe.chelseafcnews.common.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.databinding.ItemListBinding
 import com.br.natanfelipe.chelseafcnews.interfaces.OnClickItemList
 import com.br.natanfelipe.chelseafcnews.model.Articles
 
 class HomeAdapter(
     private var progressVisibility: MutableLiveData<Int>
-): PagedListAdapter<Articles, HomeViewHolder>(articlesDiffCallback), OnClickItemList{
+) : PagedListAdapter<Articles, HomeViewHolder>(articlesDiffCallback), OnClickItemList {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -24,11 +25,12 @@ class HomeAdapter(
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
         currentList?.let { list ->
-            if(list.size > 0) {
-               progressVisibility.value = View.GONE
+            if (list.size > 0) {
+                progressVisibility.value = View.GONE
+                EspressoIdlingResources.decrement()
             }
         }
-        getItem(position)?.let {article ->
+        getItem(position)?.let { article ->
             holder.bind(article)
             holder.view.click = this
         }
@@ -45,10 +47,10 @@ class HomeAdapter(
     }
 
     override fun onClick(view: View) {
-        currentList?.let {  articles ->
+        currentList?.let { articles ->
             for (article in articles) {
-                if(view.tag == article.url) {
-                    val action =  HomeFragmentDirections.navigateToNewsDetail(article)
+                if (view.tag == article.url) {
+                    val action = HomeFragmentDirections.navigateToNewsDetail(article)
                     Navigation.findNavController(view).navigate(action)
                 }
             }

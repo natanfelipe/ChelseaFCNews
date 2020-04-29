@@ -17,6 +17,7 @@ import coil.api.load
 import com.br.natanfelipe.chelseafcnews.R
 import com.br.natanfelipe.chelseafcnews.ui.details.ArticleDetailsFragmentDirections
 import java.text.SimpleDateFormat
+import java.util.*
 
 @BindingAdapter("app:image")
 fun loadImage(imageView: AppCompatImageView, url: String?) {
@@ -70,6 +71,6 @@ fun convertHtmlToText(textView: AppCompatTextView, text: String, url: String) {
 fun convertTextToDate(textView: AppCompatTextView, date: String) {
     val fromServer = SimpleDateFormat("yyyy-MM-dd")
     val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
-    val newDate = fromServer.parse(date)
+    val newDate: Date = fromServer.parse(date)
     textView.text = simpleDateFormat.format(newDate)
 }
