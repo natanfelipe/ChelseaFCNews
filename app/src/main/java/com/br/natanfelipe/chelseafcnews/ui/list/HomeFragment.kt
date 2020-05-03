@@ -66,9 +66,17 @@ class HomeFragment : Fragment() {
                 EspressoIdlingResources.increment()
 
                 articlesDataSource.loadState.observe(viewLifecycleOwner, Observer { state ->
-                    refreshList.isRefreshing = state == NetworkState.LOADING
-                    if(state == NetworkState.LOADED) {
-                        EspressoIdlingResources.decrement()
+
+                    when (state) {
+                        NetworkState.LOADING -> {
+                            mutableProgressVisibility.value = View.VISIBLE
+                            mutableErrorMessageVisibility.value = View.GONE
+                        }
+                        NetworkState.LOADED -> {
+                            EspressoIdlingResources.decrement()
+                            mutableProgressVisibility.value = View.GONE
+                        }
+                        else -> displayError(isDeviceOnline)
                     }
                 })
 

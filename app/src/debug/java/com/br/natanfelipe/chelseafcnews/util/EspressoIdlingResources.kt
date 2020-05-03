@@ -14,7 +14,6 @@ object EspressoIdlingResources {
 
     fun decrement() {
         if(!countingIdlingResource.isIdleNow) {
-            Log.d("NATAN","${ countingIdlingResource.isIdleNow}")
             countingIdlingResource.decrement()
         }
     }

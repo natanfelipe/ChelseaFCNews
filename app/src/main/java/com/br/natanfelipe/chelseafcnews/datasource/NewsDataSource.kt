@@ -64,4 +64,9 @@ class NewsDataSource(private val repository: NewsRepository) : PageKeyedDataSour
             }
         }
     }
+
+    override fun invalidate() {
+        super.invalidate()
+        job.cancel()
+    }
 }

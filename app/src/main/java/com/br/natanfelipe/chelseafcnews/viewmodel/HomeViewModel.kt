@@ -10,16 +10,20 @@ import com.br.natanfelipe.chelseafcnews.R
 import com.br.natanfelipe.chelseafcnews.datasource.NewsDataSourceFactory
 import com.br.natanfelipe.chelseafcnews.model.Articles
 
-class HomeViewModel(private val newsDataSourceFactory: NewsDataSourceFactory): ViewModel() {
+class HomeViewModel(newsDataSourceFactory: NewsDataSourceFactory): ViewModel() {
     private val config = PagedList.Config.Builder()
         .setPageSize(20)
         .setEnablePlaceholders(true)
         .build()
 
-    private val pagedList = LivePagedListBuilder(newsDataSourceFactory, config)
+    val pagedList = LivePagedListBuilder(newsDataSourceFactory, config)
         .build()
 
-    private val mutableErrorMessageVisibility = MutableLiveData<Int>().apply { View.GONE }
+    val mutableProgressVisibility = MutableLiveData<Int>().apply { View.VISIBLE }
+    val progressVisibility: LiveData<Int>
+        get() = mutableProgressVisibility
+
+    val mutableErrorMessageVisibility = MutableLiveData<Int>().apply { View.GONE }
     val errorMessageVisibility: LiveData<Int>
     get() = mutableErrorMessageVisibility
 
@@ -35,14 +39,18 @@ class HomeViewModel(private val newsDataSourceFactory: NewsDataSourceFactory): V
     }
 
     fun refresh() {
-        articlesDataSource.invalidate()
+        pagedList.value?.let {
+            it.dataSource.invalidate()
+        }
         mutableErrorMessageVisibility.value = View.GONE
+        mutableProgressVisibility.value = View.VISIBLE
     }
 
     fun loadData(): LiveData<PagedList<Articles>> = pagedList
 
     fun displayError(isConnected: Boolean) {
         mutableErrorMessageVisibility.value = View.VISIBLE
+        mutableProgressVisibility.value = View.GONE
         mutableErrorMessageText.value = if (isConnected) R.string.generic_error else R.string.internet_error
     }
 
