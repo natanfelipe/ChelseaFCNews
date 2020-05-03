@@ -7,10 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.br.natanfelipe.chelseafcnews.common.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.databinding.ItemListBinding
 import com.br.natanfelipe.chelseafcnews.interfaces.OnClickItemList
 import com.br.natanfelipe.chelseafcnews.model.Articles
+import com.br.natanfelipe.chelseafcnews.util.EspressoIdlingResources
 
 class HomeAdapter(
     private var progressVisibility: MutableLiveData<Int>

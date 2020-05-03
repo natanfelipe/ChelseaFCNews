@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.br.natanfelipe.chelseafcnews.R
-import com.br.natanfelipe.chelseafcnews.common.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.datasource.NewsDataSourceFactory
 import com.br.natanfelipe.chelseafcnews.model.Articles
+import okhttp3.ResponseBody
 
 class HomeViewModel(private val newsDataSourceFactory: NewsDataSourceFactory): BaseViewModel() {
     var articles: LiveData<PagedList<Articles>>
@@ -67,5 +67,13 @@ class HomeViewModel(private val newsDataSourceFactory: NewsDataSourceFactory): B
     override fun onCleared() {
         super.onCleared()
         job.cancel()
+    }
+
+    override fun errorMessage(errorBody: ResponseBody) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setState(data: List<Articles>) {
+        TODO("Not yet implemented")
     }
 }

@@ -1,4 +1,4 @@
-package com.br.natanfelipe.chelseafcnews.common
+package com.br.natanfelipe.chelseafcnews.util
 
 import android.util.Log
 import androidx.test.espresso.idling.CountingIdlingResource

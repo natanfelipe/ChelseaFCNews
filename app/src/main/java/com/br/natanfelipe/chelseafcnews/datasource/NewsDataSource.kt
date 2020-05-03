@@ -2,9 +2,9 @@ package com.br.natanfelipe.chelseafcnews.datasource
 
 import android.util.Log
 import androidx.paging.PageKeyedDataSource
-import com.br.natanfelipe.chelseafcnews.common.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.model.Articles
 import com.br.natanfelipe.chelseafcnews.repository.NewsRepository
+import com.br.natanfelipe.chelseafcnews.util.EspressoIdlingResources
 import kotlinx.coroutines.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject

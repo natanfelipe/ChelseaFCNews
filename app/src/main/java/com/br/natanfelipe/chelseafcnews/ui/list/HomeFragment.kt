@@ -10,9 +10,9 @@ import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.br.natanfelipe.chelseafcnews.R
-import com.br.natanfelipe.chelseafcnews.common.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.common.Utils
 import com.br.natanfelipe.chelseafcnews.databinding.FragmentHomeBindingImpl
+import com.br.natanfelipe.chelseafcnews.util.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.android.ext.android.inject

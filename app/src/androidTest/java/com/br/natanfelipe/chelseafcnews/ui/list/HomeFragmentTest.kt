@@ -20,11 +20,9 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import com.br.natanfelipe.chelseafcnews.R
-import com.br.natanfelipe.chelseafcnews.common.EspressoIdlingResources
-import org.hamcrest.CoreMatchers.containsString
+import com.br.natanfelipe.chelseafcnews.util.EspressoIdlingResources
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.IsNot.not
@@ -36,6 +34,7 @@ class HomeFragmentTest {
     @get: Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
     val LIST_ITEM_CLICKED = 3
+    val MIN_ITEM_COUNT = 20
     val IS_EMPTY = ""
     val READ_MORE = "Tap to read more"
 
@@ -47,6 +46,11 @@ class HomeFragmentTest {
     @Test
     fun is_newsList_visible_on_app_launch() {
         onView(withId(R.id.newsList)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun is_newsList_with_minimun_number_of_articles() {
+        onView(withId(R.id.newsList)).check(matches(hasMinimumChildCount(MIN_ITEM_COUNT)))
     }
 
     @Test
