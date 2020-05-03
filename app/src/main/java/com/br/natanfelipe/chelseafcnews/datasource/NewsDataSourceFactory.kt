@@ -9,7 +9,7 @@ import org.koin.core.inject
 class NewsDataSourceFactory: DataSource.Factory<Int,Articles>(), KoinComponent {
 
     private val postLiveData = MutableLiveData<NewsDataSource>()
-    private val articleDataSource: NewsDataSource by inject()
+    val articleDataSource: NewsDataSource by inject()
 
     override fun create(): DataSource<Int, Articles> {
         postLiveData.postValue(articleDataSource)

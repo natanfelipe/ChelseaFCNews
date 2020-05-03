@@ -14,14 +14,15 @@ import org.koin.dsl.module
 
 val appModule = module {
     single { provideRepository(get()) }
-    single { NewsDataSource() }
-    single { NewsDataSourceFactory() }
+    single { NewsDataSource(get()) }
+    factory { provideNewsDataSourceFactory() }
     single { Utils() }
     viewModel { provideViewModel(get()) }
     viewModel { (articles: Articles) -> DetailsViewModel(articles) }
     viewModel { (url: String) -> WebArticleViewModel(url) }
 }
 
+fun provideNewsDataSourceFactory() = NewsDataSourceFactory()
 fun provideRepository(newsApi: NewsApi) = NewsRepository(newsApi)
 fun provideViewModel(newsDataSourceFactory: NewsDataSourceFactory): HomeViewModel = HomeViewModel(newsDataSourceFactory)
 

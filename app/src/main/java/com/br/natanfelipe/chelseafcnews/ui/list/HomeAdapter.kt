@@ -12,9 +12,7 @@ import com.br.natanfelipe.chelseafcnews.interfaces.OnClickItemList
 import com.br.natanfelipe.chelseafcnews.model.Articles
 import com.br.natanfelipe.chelseafcnews.util.EspressoIdlingResources
 
-class HomeAdapter(
-    private var progressVisibility: MutableLiveData<Int>
-) : PagedListAdapter<Articles, HomeViewHolder>(articlesDiffCallback), OnClickItemList {
+class HomeAdapter() : PagedListAdapter<Articles, HomeViewHolder>(articlesDiffCallback), OnClickItemList {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -24,12 +22,6 @@ class HomeAdapter(
     }
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
-        currentList?.let { list ->
-            if (list.size > 0) {
-                progressVisibility.value = View.GONE
-                EspressoIdlingResources.decrement()
-            }
-        }
         getItem(position)?.let { article ->
             holder.bind(article)
             holder.view.click = this

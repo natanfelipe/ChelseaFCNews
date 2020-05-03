@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import androidx.navigation.Navigation
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.api.load
 import com.br.natanfelipe.chelseafcnews.R
 import com.br.natanfelipe.chelseafcnews.ui.details.ArticleDetailsFragmentDirections
@@ -73,4 +74,9 @@ fun convertTextToDate(textView: AppCompatTextView, date: String) {
     val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
     val newDate: Date = fromServer.parse(date)
     textView.text = simpleDateFormat.format(newDate)
+}
+
+@BindingAdapter("color")
+fun setSwipeRefreshLayoutColor(refreshLayout: SwipeRefreshLayout, color: Int){
+    refreshLayout.setColorSchemeColors(color)
 }

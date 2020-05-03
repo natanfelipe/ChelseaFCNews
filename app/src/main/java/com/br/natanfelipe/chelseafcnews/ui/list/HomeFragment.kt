@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import com.br.natanfelipe.chelseafcnews.R
 import com.br.natanfelipe.chelseafcnews.common.Utils
 import com.br.natanfelipe.chelseafcnews.databinding.FragmentHomeBindingImpl
+import com.br.natanfelipe.chelseafcnews.model.NetworkState
 import com.br.natanfelipe.chelseafcnews.util.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -44,13 +45,17 @@ class HomeFragment : Fragment() {
 
         val context = this.getContext()
 
-        adapter = HomeAdapter(homeViewModel.mutableProgressVisibility)
+        adapter = HomeAdapter()
         newsList.adapter = adapter
         context?.let {
             loadNews(it)
         }
         refreshList.setOnRefreshListener {
-            refresh()
+            homeViewModel.refresh()
+            context?.let {
+                loadNews(it)
+            }
+            refreshList.isRefreshing = false
         }
     }
 
@@ -59,28 +64,22 @@ class HomeFragment : Fragment() {
         homeViewModel.apply {
             if (isDeviceOnline) {
                 EspressoIdlingResources.increment()
+
+                articlesDataSource.loadState.observe(viewLifecycleOwner, Observer { state ->
+                    refreshList.isRefreshing = state == NetworkState.LOADING
+                    if(state == NetworkState.LOADED) {
+                        EspressoIdlingResources.decrement()
+                    }
+                })
+
                 loadData().observe(viewLifecycleOwner, Observer { articles ->
                     adapter.submitList(articles)
                     animateRecyclerView()
                 })
             } else {
-                displayErrorMessage(isDeviceOnline)
+                displayError(!isDeviceOnline)
             }
         }
-
-    }
-
-    private fun refresh() {
-        homeViewModel.apply {
-            articles.value?.let {
-                it.dataSource.invalidate()
-            }
-            refresh()
-            context?.let {
-                loadNews(it)
-            }
-        }
-        refreshList.isRefreshing = false
     }
 
     private fun animateRecyclerView() {
