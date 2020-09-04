@@ -6,11 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.br.natanfelipe.chelseafcnews.R
 import com.br.natanfelipe.chelseafcnews.common.Utils
 import com.br.natanfelipe.chelseafcnews.databinding.FragmentHomeBindingImpl
+import com.br.natanfelipe.chelseafcnews.model.NetworkState
+import com.br.natanfelipe.chelseafcnews.util.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.android.ext.android.inject
@@ -42,13 +45,17 @@ class HomeFragment : Fragment() {
 
         val context = this.getContext()
 
-        adapter = HomeAdapter(homeViewModel.mutableProgressVisibility)
+        adapter = HomeAdapter()
         newsList.adapter = adapter
         context?.let {
             loadNews(it)
         }
         refreshList.setOnRefreshListener {
-            refresh()
+            homeViewModel.refresh()
+            context?.let {
+                loadNews(it)
+            }
+            refreshList.isRefreshing = false
         }
     }
 
@@ -56,26 +63,36 @@ class HomeFragment : Fragment() {
         val isDeviceOnline = utils.isInternetAvailable(context)
         homeViewModel.apply {
             if (isDeviceOnline) {
+                EspressoIdlingResources.increment()
+
+                articlesDataSource.loadState.observe(viewLifecycleOwner, Observer { state ->
+
+                    when (state) {
+                        NetworkState.LOADING -> {
+                            mutableProgressVisibility.value = View.VISIBLE
+                            mutableErrorMessageVisibility.value = View.GONE
+                        }
+                        NetworkState.LOADED -> {
+                            EspressoIdlingResources.decrement()
+                            mutableProgressVisibility.value = View.GONE
+                        }
+                        else -> displayError(isDeviceOnline)
+                    }
+                })
+
                 loadData().observe(viewLifecycleOwner, Observer { articles ->
                     adapter.submitList(articles)
+                    animateRecyclerView()
                 })
             } else {
-                displayErrorMessage(isDeviceOnline)
+                displayError(!isDeviceOnline)
             }
         }
-
     }
 
-    private fun refresh() {
-        homeViewModel.apply {
-            articles.value?.let {
-                it.dataSource.invalidate()
-            }
-            refresh()
-            context?.let {
-                loadNews(it)
-            }
-        }
-        refreshList.isRefreshing = false
+    private fun animateRecyclerView() {
+        val resId = R.anim.layout_animation_collapse
+        val animation = AnimationUtils.loadLayoutAnimation(this.context, resId)
+        newsList.setLayoutAnimation(animation)
     }
 }

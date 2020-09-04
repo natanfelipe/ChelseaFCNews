@@ -3,67 +3,55 @@ package com.br.natanfelipe.chelseafcnews.viewmodel
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.br.natanfelipe.chelseafcnews.R
 import com.br.natanfelipe.chelseafcnews.datasource.NewsDataSourceFactory
 import com.br.natanfelipe.chelseafcnews.model.Articles
 
-class HomeViewModel(private val newsDataSourceFactory: NewsDataSourceFactory): BaseViewModel() {
-    var articles: LiveData<PagedList<Articles>>
+class HomeViewModel(newsDataSourceFactory: NewsDataSourceFactory): ViewModel() {
+    private val config = PagedList.Config.Builder()
+        .setPageSize(20)
+        .setEnablePlaceholders(true)
+        .build()
+
+    val pagedList = LivePagedListBuilder(newsDataSourceFactory, config)
+        .build()
+
     val mutableProgressVisibility = MutableLiveData<Int>().apply { View.VISIBLE }
     val progressVisibility: LiveData<Int>
-    get() = mutableProgressVisibility
-    private val mutableListVisibility = MutableLiveData<Int>().apply { View.GONE }
-    val listVisibility: LiveData<Int>
-    get() = mutableListVisibility
-    private val mutableErrorMessageVisibility = MutableLiveData<Int>().apply { View.GONE }
+        get() = mutableProgressVisibility
+
+    val mutableErrorMessageVisibility = MutableLiveData<Int>().apply { View.GONE }
     val errorMessageVisibility: LiveData<Int>
     get() = mutableErrorMessageVisibility
+
     private val mutableErrorMessageText = MutableLiveData<Int>().apply { R.string.generic_error }
     val errorMessageText: LiveData<Int>
     get() = mutableErrorMessageText
 
+    val articlesDataSource = newsDataSourceFactory.articleDataSource
+
     init {
-        articles = initPagination()
+        mutableErrorMessageText.value = R.string.generic_error
+        mutableErrorMessageVisibility.value = View.GONE
     }
 
     fun refresh() {
-        mutableProgressVisibility.value = View.VISIBLE
-        mutableErrorMessageVisibility.value = View.GONE
-        mutableListVisibility.value = View.GONE
-    }
-
-    fun loadData(): LiveData<PagedList<Articles>> {
-        if (articles.value?.size == 0) {
-            mutableErrorMessageVisibility.value = View.VISIBLE
-            mutableListVisibility.value = View.GONE
-        } else {
-            mutableErrorMessageVisibility.value = View.GONE
-            mutableListVisibility.value = View.VISIBLE
+        pagedList.value?.let {
+            it.dataSource.invalidate()
         }
-
-        return articles
+        mutableErrorMessageVisibility.value = View.GONE
+        mutableProgressVisibility.value = View.VISIBLE
     }
 
-    private fun initPagination(): LiveData<PagedList<Articles>> {
-        val pagedList = PagedList.Config.Builder()
-            .setPageSize(20)
-            .setEnablePlaceholders(true)
-            .build()
+    fun loadData(): LiveData<PagedList<Articles>> = pagedList
 
-        return LivePagedListBuilder(newsDataSourceFactory,pagedList).build()
-    }
-
-    fun displayErrorMessage(isDeviceOffline: Boolean) {
+    fun displayError(isConnected: Boolean) {
         mutableErrorMessageVisibility.value = View.VISIBLE
-        mutableListVisibility.value = View.GONE
         mutableProgressVisibility.value = View.GONE
-        mutableErrorMessageText.value = if (!isDeviceOffline) R.string.internet_error else R.string.generic_error
+        mutableErrorMessageText.value = if (isConnected) R.string.generic_error else R.string.internet_error
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-    }
 }
