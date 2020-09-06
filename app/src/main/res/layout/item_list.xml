@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:id="@+id/image"
-                tools:src="@mipmap/ic_launcher"
+                tools:src="@drawable/ic_image_black"
                 app:image="@{article.urlToImage}"
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent"

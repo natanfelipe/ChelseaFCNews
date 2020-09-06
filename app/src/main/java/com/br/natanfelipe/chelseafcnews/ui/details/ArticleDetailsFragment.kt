@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-
 import com.br.natanfelipe.chelseafcnews.R
+import com.br.natanfelipe.chelseafcnews.common.TEXT_TYPE
 import com.br.natanfelipe.chelseafcnews.databinding.FragmentArticleDetailsBindingImpl
 import com.br.natanfelipe.chelseafcnews.viewmodel.DetailsViewModel
 import kotlinx.android.synthetic.main.fragment_article_details.*
@@ -18,20 +18,21 @@ import org.koin.core.parameter.parametersOf
 
 class ArticleDetailsFragment : Fragment() {
 
-    private lateinit var appCompatActivity: AppCompatActivity
-
     private val viewModel: DetailsViewModel by inject {
         parametersOf(arguments?.let {
             ArticleDetailsFragmentArgs.fromBundle(it).article
         })
     }
 
+    private lateinit var appCompatActivity: AppCompatActivity
+    private lateinit var binding: FragmentArticleDetailsBindingImpl
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appCompatActivity = activity as AppCompatActivity
     }
 
-    private lateinit var binding: FragmentArticleDetailsBindingImpl
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,8 +40,11 @@ class ArticleDetailsFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_article_details, container, false
         )
-        binding.viewmodel = viewModel
-        binding.lifecycleOwner = this
+
+        binding.apply {
+            viewmodel = viewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
 
         return binding.root
     }
@@ -61,7 +65,7 @@ class ArticleDetailsFragment : Fragment() {
         val intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, viewModel.link)
-            type = "text/plain"
+            type = TEXT_TYPE
         }
         val shareIntent = Intent.createChooser(intent, null)
         startActivity(shareIntent)

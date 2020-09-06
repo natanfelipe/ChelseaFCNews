@@ -1,6 +1,5 @@
 package com.br.natanfelipe.chelseafcnews.di
 
-import com.br.natanfelipe.chelseafcnews.common.Utils
 import com.br.natanfelipe.chelseafcnews.datasource.NewsApi
 import com.br.natanfelipe.chelseafcnews.datasource.NewsDataSource
 import com.br.natanfelipe.chelseafcnews.datasource.NewsDataSourceFactory
@@ -16,7 +15,6 @@ val appModule = module {
     single { provideRepository(get()) }
     single { NewsDataSource(get()) }
     factory { provideNewsDataSourceFactory() }
-    single { Utils() }
     viewModel { provideViewModel(get()) }
     viewModel { (articles: Articles) -> DetailsViewModel(articles) }
     viewModel { (url: String) -> WebArticleViewModel(url) }

@@ -1,15 +1,15 @@
 package com.br.natanfelipe.chelseafcnews.ui.webarticle
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
-import android.webkit.WebView
+import android.webkit.*
 import androidx.databinding.DataBindingUtil
-
 import com.br.natanfelipe.chelseafcnews.R
+import com.br.natanfelipe.chelseafcnews.common.hasInternetConnection
 import com.br.natanfelipe.chelseafcnews.databinding.FragmentWebArticleBinding
 import com.br.natanfelipe.chelseafcnews.viewmodel.WebArticleViewModel
 import kotlinx.android.synthetic.main.fragment_web_article.*
@@ -26,12 +26,18 @@ class WebArticleFragment : Fragment() {
         })
     }
 
+    private var isError = false
+
+    private fun isOnline() = requireContext().hasInternetConnection()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentWebArticleBinding>(inflater,
-            R.layout.fragment_web_article, container, false)
+        val binding = DataBindingUtil.inflate<FragmentWebArticleBinding>(
+            inflater,
+            R.layout.fragment_web_article, container, false
+        )
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = this
@@ -41,21 +47,61 @@ class WebArticleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkConnectivity(savedInstanceState)
+    }
 
-        if(savedInstanceState == null && viewModel.isUrlWorking()) {
-            webview.settings.apply {
-                loadsImagesAutomatically = true
-                javaScriptEnabled = true
+    private fun checkConnectivity(savedInstanceState: Bundle?) {
+        when (isOnline()) {
+            true -> {
+                prepareWebView(savedInstanceState)
             }
+            else -> viewModel.isDeviceOnline(isOnline())
+        }
+    }
 
-            webview.webChromeClient = object : WebChromeClient() {
-                override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                    super.onProgressChanged(view, newProgress)
-                    viewModel.handleLoading(newProgress)
+    private fun prepareWebView(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null && viewModel.isUrlWorking()) {
+            webview.apply {
+                settings.apply {
+                    loadsImagesAutomatically = true
+                    javaScriptEnabled = true
+                }
+                loadWebView(this)
+            }
+        }
+    }
+
+    private fun loadWebView(webView: WebView) {
+        webView.apply {
+            webViewClient = object : WebViewClient() {
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    isError = false
+                }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    if (isError) {
+                        if (isOnline()) {
+                            viewModel.genericError()
+                        } else {
+                            viewModel.isDeviceOnline(isOnline())
+                        }
+                    } else {
+                        viewModel.loadPage()
+                    }
+                }
+
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?
+                ) {
+                    super.onReceivedError(view, request, error)
+                    isError = true
                 }
             }
-
-            webview.loadUrl(viewModel.linkUrl)
+            loadUrl(viewModel.linkUrl)
         }
     }
 
@@ -66,7 +112,9 @@ class WebArticleFragment : Fragment() {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        webview.restoreState(savedInstanceState)
+        savedInstanceState?.let {
+            webview.restoreState(it)
+        }
     }
 
 }

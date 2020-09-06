@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -25,9 +26,7 @@ fun provideRetrofit(client: OkHttpClient): NewsApi = Retrofit.Builder().apply {
 }.build().create(NewsApi::class.java)
 
 
-fun provideClient(): OkHttpClient {
-
-    return OkHttpClient.Builder().apply {
+fun provideClient(): OkHttpClient = OkHttpClient.Builder().apply {
         addInterceptor(provideLoggingInterceptor())
             .addNetworkInterceptor {
                 provideRequestParams(it)
@@ -36,7 +35,6 @@ fun provideClient(): OkHttpClient {
         readTimeout(TIMEOUT, TimeUnit.SECONDS)
         writeTimeout(TIMEOUT, TimeUnit.SECONDS)
     }.build()
-}
 
 private fun provideLoggingInterceptor(): HttpLoggingInterceptor =
     HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
@@ -51,7 +49,7 @@ private fun provideRequestParams(chain: Interceptor.Chain): Response {
     var request = chain.request()
     val newUrl = request.url.newBuilder().apply {
         addQueryParameter("q", BuildConfig.THEME)
-        addQueryParameter("language", DEFAULT_LANGUAGE)
+        addQueryParameter("language", Locale.getDefault().language)
         addQueryParameter("apiKey", BuildConfig.API_KEY)
     }.build()
 

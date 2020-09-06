@@ -1,6 +1,5 @@
 package com.br.natanfelipe.chelseafcnews.datasource
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.br.natanfelipe.chelseafcnews.common.INITIAL_PAGE
@@ -18,16 +17,13 @@ class NewsDataSource(private val repository: NewsRepository) : PageKeyedDataSour
     private val job: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
-    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        throwable.printStackTrace()
-    }
 
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Articles>
     ) {
-        getNews(INITIAL_PAGE, INITIAL_PAGE + 1, callback, null)
+        getNews(INITIAL_PAGE, INITIAL_PAGE+1, callback, null)
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Articles>) {

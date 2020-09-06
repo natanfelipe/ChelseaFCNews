@@ -12,11 +12,11 @@ import com.br.natanfelipe.chelseafcnews.model.Articles
 
 class HomeViewModel(newsDataSourceFactory: NewsDataSourceFactory): ViewModel() {
     private val config = PagedList.Config.Builder()
-        .setPageSize(20)
+        .setPageSize(10)
         .setEnablePlaceholders(true)
         .build()
 
-    val pagedList = LivePagedListBuilder(newsDataSourceFactory, config)
+    private val pagedList = LivePagedListBuilder(newsDataSourceFactory, config)
         .build()
 
     val mutableProgressVisibility = MutableLiveData<Int>().apply { View.VISIBLE }
@@ -39,9 +39,7 @@ class HomeViewModel(newsDataSourceFactory: NewsDataSourceFactory): ViewModel() {
     }
 
     fun refresh() {
-        pagedList.value?.let {
-            it.dataSource.invalidate()
-        }
+        pagedList.value?.dataSource?.invalidate()
         mutableErrorMessageVisibility.value = View.GONE
         mutableProgressVisibility.value = View.VISIBLE
     }
