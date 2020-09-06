@@ -21,5 +21,5 @@ Please check the TODO that notices that you to get your key by registering on [N
 
 **Media**
 
-https://github.com/natanfelipe/ChelseaFCNews/blob/master/chelseafc.mp4
+[Video](https://github.com/natanfelipe/ChelseaFCNews/blob/master/chelseafc.mp4)
 
