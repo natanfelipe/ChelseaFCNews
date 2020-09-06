@@ -19,9 +19,11 @@ Please check the TODO that notices that you to get your key by registering on [N
 - [x] [Databinding](https://developer.android.com/topic/libraries/data-binding)
 - [x] [Espresso for UI testing](https://developer.android.com/training/testing/espresso)
 
-**Media**
+The architectural pattern used is MVVM
 
-<video width="320" height="240" controls>
-  <source src="https://github.com/natanfelipe/ChelseaFCNews/blob/master/chelseafc.mp4" type="video/mp4">
-</video>
-
+**Screenshots**
+<p float="left">
+  <img src="/list.png" width="300" />
+  <img src="/details.png" width="300" /> 
+  <img src="/webview.png" width="300" />
+</p>
