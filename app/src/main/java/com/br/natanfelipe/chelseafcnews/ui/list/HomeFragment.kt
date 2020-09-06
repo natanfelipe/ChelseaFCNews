@@ -1,6 +1,5 @@
 package com.br.natanfelipe.chelseafcnews.ui.list
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,20 +9,18 @@ import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.br.natanfelipe.chelseafcnews.R
-import com.br.natanfelipe.chelseafcnews.common.Utils
+import com.br.natanfelipe.chelseafcnews.common.hasInternetConnection
 import com.br.natanfelipe.chelseafcnews.databinding.FragmentHomeBindingImpl
 import com.br.natanfelipe.chelseafcnews.model.NetworkState
 import com.br.natanfelipe.chelseafcnews.util.EspressoIdlingResources
 import com.br.natanfelipe.chelseafcnews.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModel()
-    private val utils: Utils by inject()
-    private lateinit var adapter: HomeAdapter
+    private val adapter = HomeAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,35 +31,27 @@ class HomeFragment : Fragment() {
             inflater, R.layout.fragment_home, container, false
         )
 
-        binding.viewModel = homeViewModel
-        binding.lifecycleOwner = this
+        binding.apply {
+            viewModel = homeViewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
 
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        val context = this.getContext()
-
-        adapter = HomeAdapter()
-        newsList.adapter = adapter
-        context?.let {
-            loadNews(it)
-        }
-        refreshList.setOnRefreshListener {
-            homeViewModel.refresh()
-            context?.let {
-                loadNews(it)
-            }
-            refreshList.isRefreshing = false
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadNews()
+        refreshNews()
     }
 
-    private fun loadNews(context: Context) {
-        val isDeviceOnline = utils.isInternetAvailable(context)
+    private fun isDeviceOnline() = requireContext().hasInternetConnection()
+
+    private fun loadNews() {
+        newsList.adapter = adapter
+
         homeViewModel.apply {
-            if (isDeviceOnline) {
+            if (isDeviceOnline()) {
                 EspressoIdlingResources.increment()
 
                 articlesDataSource.loadState.observe(viewLifecycleOwner, Observer { state ->
@@ -76,23 +65,32 @@ class HomeFragment : Fragment() {
                             EspressoIdlingResources.decrement()
                             mutableProgressVisibility.value = View.GONE
                         }
-                        else -> displayError(isDeviceOnline)
+                        else -> displayError(isDeviceOnline())
                     }
                 })
+
 
                 loadData().observe(viewLifecycleOwner, Observer { articles ->
                     adapter.submitList(articles)
                     animateRecyclerView()
                 })
             } else {
-                displayError(!isDeviceOnline)
+                displayError(!isDeviceOnline())
             }
+        }
+    }
+
+    private fun refreshNews() {
+        refreshList.setOnRefreshListener {
+            homeViewModel.refresh()
+            loadNews()
+            refreshList.isRefreshing = false
         }
     }
 
     private fun animateRecyclerView() {
         val resId = R.anim.layout_animation_collapse
         val animation = AnimationUtils.loadLayoutAnimation(this.context, resId)
-        newsList.setLayoutAnimation(animation)
+        newsList.layoutAnimation = animation
     }
 }

@@ -4,37 +4,54 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.br.natanfelipe.chelseafcnews.R
 
 class WebArticleViewModel(private val url: String): ViewModel() {
 
-    private val _loading = MutableLiveData<Int>().apply { value = View.VISIBLE }
     private val _loadingVisibility = MutableLiveData<Int>()
-    private val _errorVisibility = MutableLiveData<Int>()
-    val linkUrl = url
-    val loading: LiveData<Int>
-        get() = _loading
     val loadingVisibility:LiveData<Int>
         get() = _loadingVisibility
+    private val _errorVisibility = MutableLiveData<Int>()
+    val linkUrl = url
+    private val _errorMessage = MutableLiveData<Any>()
+    val errorMessage: LiveData<Any>
+        get() = _errorMessage
+
     val errorVisibility: LiveData<Int>
         get() = _errorVisibility
+    private val _webViewVisibility = MutableLiveData<Int>()
+    val webViewVisibility: LiveData<Int>
+        get() = _webViewVisibility
 
-    fun isUrlWorking(): Boolean {
-        val isToLoad = !linkUrl.isNullOrEmpty()
 
-        if(!isToLoad) {
-           _errorVisibility.value = View.VISIBLE
-        } else {
-            _errorVisibility.value = View.GONE
-        }
+    fun isUrlWorking(): Boolean = linkUrl.isNotEmpty()
 
-        return isToLoad
+    fun loadPage() {
+        handleErrorVisibility(isNotError = true, isGenericError = null)
+    }
+
+    fun genericError() {
+        handleErrorVisibility(isNotError = false, isGenericError = true)
+    }
+
+    fun isDeviceOnline(isConnected: Boolean) {
+        handleErrorVisibility(false, isConnected)
     }
 
 
-    fun handleLoading(loading: Int) {
-        _loading.value = loading
-        if(loading == 100){
-            _loadingVisibility.value = View.GONE
+    private fun handleErrorVisibility(isNotError: Boolean, isGenericError: Boolean?) {
+        _loadingVisibility.value = View.GONE
+        if (isNotError) {
+            _webViewVisibility.value = View.VISIBLE
+            _errorVisibility.value = View.GONE
+            _errorMessage.value = ""
+        } else {
+            _webViewVisibility.value = View.GONE
+            _errorVisibility.value = View.VISIBLE
+            isGenericError?.let {
+                _errorMessage.value = if (it) R.string.generic_error else R.string.internet_error
+
+            }
         }
     }
 }

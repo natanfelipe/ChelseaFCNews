@@ -13,7 +13,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import androidx.navigation.Navigation
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.api.load
 import com.br.natanfelipe.chelseafcnews.R
 import com.br.natanfelipe.chelseafcnews.ui.details.ArticleDetailsFragmentDirections
@@ -70,13 +69,22 @@ fun convertHtmlToText(textView: AppCompatTextView, text: String, url: String) {
 
 @BindingAdapter("dateFormat")
 fun convertTextToDate(textView: AppCompatTextView, date: String) {
-    val fromServer = SimpleDateFormat("yyyy-MM-dd")
-    val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
-    val newDate: Date = fromServer.parse(date)
-    textView.text = simpleDateFormat.format(newDate)
+    val fromServer = SimpleDateFormat(SERVER_DATE_PATTERN, Locale.getDefault())
+    val simpleDateFormat = SimpleDateFormat(DATE_PATTERN, Locale.getDefault())
+    val newDate = fromServer.parse(date)
+    newDate?.let {
+        textView.text = simpleDateFormat.format(it)
+    }
+
 }
 
-@BindingAdapter("color")
-fun setSwipeRefreshLayoutColor(refreshLayout: SwipeRefreshLayout, color: Int){
-    refreshLayout.setColorSchemeColors(color)
+
+@BindingAdapter("app:errorMessage")
+fun errorMessage(textView: AppCompatTextView, message: Any?) {
+    val context = textView.context
+    textView.text = when(message) {
+        is String -> message
+        is Int -> context.getString(message)
+        else -> ""
+    }
 }
