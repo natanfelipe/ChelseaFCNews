@@ -1,8 +1,7 @@
 # **Chelsea FC News**
 
 
-This is an app where the goal is to display the latest news from Chelsea FC. To get the news I'm using the [NewsApi](https://newsapi.org/).
-
+This is an app where the goal is to display the latest news from Chelsea FC.
 **Before start:**
 
 Please check the TODO that notices that you to get your key by registering on [NewsApi](https://newsapi.org/) and add it on the gradle.properties.
