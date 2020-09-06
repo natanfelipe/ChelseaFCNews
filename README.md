@@ -2,6 +2,7 @@
 
 
 This is an app where the goal is to display the latest news from Chelsea FC.
+
 **Before start:**
 
 Please check the TODO that notices that you to get your key by registering on [NewsApi](https://newsapi.org/) and add it on the gradle.properties.
@@ -19,4 +20,6 @@ Please check the TODO that notices that you to get your key by registering on [N
 - [x] [Espresso for UI testing](https://developer.android.com/training/testing/espresso)
 
 **Media**
+
+https://github.com/natanfelipe/ChelseaFCNews/blob/master/chelseafc.mp4
 
