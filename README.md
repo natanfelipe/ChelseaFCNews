@@ -21,5 +21,7 @@ Please check the TODO that notices that you to get your key by registering on [N
 
 **Media**
 
-[Video](https://github.com/natanfelipe/ChelseaFCNews/blob/master/chelseafc.mp4)
+<video width="320" height="240" controls>
+  <source src="https://github.com/natanfelipe/ChelseaFCNews/blob/master/chelseafc.mp4" type="video/mp4">
+</video>
 
